@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+
+<head>
+    <title>blip</title>
+    <meta property="og:title" content="Blip" />
+    <meta property="og:type" content="website" />
+    <meta property="og:description" content="A programmable shell in the browser." />
+    <meta name="theme-color" content="#FF0000">
+</head>
+
+<body>
+    <HelpWrapper>
+        <Help>
+            <h1 magenta>Blip manual</h1>
+            <p>
+                Welcome to blip! Blip is a tiny little programming language embedded into a shell with a file editor and a manual that you are currently browsing. (Scroll down for more!)
+            </p>
+            <h2 cyan>Introduction</h2>
+            <h3 yellow>Syntax</h3>
+            <p>
+                Blip uses a command-argument-based syntax. An example of this would be: `command argument1 argument2\ still\ argument2`
+            </p>
+            <h3 yellow>Commands</h3>
+            <p>
+                Commands are the building blocks of blip. You can use pre-built commands such as the ones listed below, or define your own using functions. Here is a list of predefined functions and how to use them.
+            </p>
+            <h4 red>Comments</h4>
+            <p>
+                Both `#` and `//` are supported!
+            </p>
+            <h4 red>Echo</h4>
+            <p>
+                Use `echo TEXT` to write text to console
+            </p>
+            <h4 red>Clear</h4>
+            <p>
+                `clear` seems pretty self-explanatory. clears the text off the screen.
+            </p>
+            <h4 red>Wait</h4>
+            <p>
+                Specify an amount of ticks to delay the kernel for. Example: `wait 249` will halt the process for one second with the default tick rate of 249.
+            </p>
+            <h4 red>Write</h4>
+            <p>
+                Writes specified text to a file. Does not check if the file exists or not. Syntax: `write FILENAME CONTENT`. You can use `\n` to write a newline to the file. Example: `write test.txt line1\nline2\nhi! this is line3 :)`
+            </p>
+            <h4 red>Read</h4>
+            <p>
+                Reads a file from the filesystem into memory. Syntax: `read VARIABLE_NAME FILE_NAME`. An example would be: `read fcontent test.txt`
+            </p>
+            <h4 red>Conditions!</h4>
+            <p>
+                If conditions are met, If condition executes the commands, This is the paragraph explaining it. If indeting mattered, Then print `indenting mattered`. Indenting matters: `false`
+            </p>
+            <code block>
+                if 2 > 1 {<br>
+                    &nbsp&nbsp&nbsp&nbspecho Fair enough!<br>
+                    }<br>
+            </code>
+            <h4 red>Functions!</h4><br>
+            <code block>
+                function explanation {<br>
+                &nbsp&nbsp&nbsp&nbspecho Functions are the ones responsible for custom commands.<br>
+                &nbsp&nbsp&nbsp&nbspecho They have a syntax like the one stated above.<br>
+                }<br><br>
+                
+                function sayhello {<br>
+                &nbsp&nbsp&nbsp&nbspdefine name<br>
+                &nbsp&nbsp&nbsp&nbspecho hi [name]!<br>
+                }<br><br>
+
+                explanation<br>
+                sayhello Agent\ Z
+            </code>
+            <h4 red>Executing code at runtime</h4>
+            <p>
+                Pretty straightforward. Run the `run FILE_NAME` command to run the file. You can write content to the specified file beforehand, To use it as some sort of eval.
+            </p>
+            <h4 red>GET requests</h4><br>
+            <span yellow>WARNING: Syncrhonous performance!</span>
+            <p>
+                Downloads the content of a url. Use `download VARIABLE_NAME URL` to write the url's contents to the specified variable.
+            </p>
+            <h4 red>Declaring variables</h4>
+            <p>
+                `variables = "Piece of cake."`
+            </p>
+            <h4 red>Calling variables</h4>
+            <p>
+                Use the `[NAME]` syntax in any of the input into the kernel. Example: `echo Hi, [name]! Do you know how to declare variables? Simple! Just use: \[name]!`.
+            </p>
+            <h4 red>Depression</h4>
+            <p>
+                Try a <span cyan style="cursor: pointer" onclick="location.href = 'https://www.therecoveryvillage.com/mental-health/depression/depression-hotlines/'">hotline</span>. Use the `sadge` command.
+            </p>
+
+            <br>
+        </Help>
+    </HelpWrapper>
+
+    <Files>
+        <Window></Window>
+    </Files>
+
+    <Terminal></Terminal>
+
+    <style>
+        body {
+            background-color: #111;
+            padding: 2rem;
+            padding-left: 2rem;
+            font-family: monospace;
+            font-size: 2rem;
+
+            scroll-behavior: smooth;
+            color: white;
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        * {
+            user-select: none;
+        }
+
+        html {
+            height: 100vh;
+            width: 100vw;
+        }
+
+        *[red] {
+            color: rgb(239, 101, 101)
+        }
+
+        *[green] {
+            color: rgb(116, 255, 116)
+        }
+
+        *[yellow] {
+            color: rgb(255, 248, 112)
+        }
+
+        *[cyan] {
+            color: rgb(102, 255, 255)
+        }
+
+        *[purple] {
+            color: rgb(255, 109, 255)
+        }
+
+        *[blue] {
+            color: rgb(95, 129, 255);
+        }
+
+        *[magenta] {
+            color: rgb(185, 87, 255);
+        }
+
+        *[bold] {
+            font-weight: bold
+        }
+
+        code {
+            background-color: rgba(37, 37, 37, 0.6);
+            border-radius: 5px;
+            padding: 2px 10px;
+            color: rgb(142, 255, 178);
+        }
+
+        code[block] {
+            display: block;
+        }
+
+        Terminal {
+            width: 100vw;
+            height: 100vh;
+            outline: none;
+            user-select: none;
+            caret-color: transparent;
+        }
+
+        Terminal::after {
+            font-size: 1.8rem;
+            margin-left: 2px;
+            content: '|';
+            color: white;
+            background-color: white;
+            border-radius: 2px;
+            animation: blink 1s ease-in-out infinite;
+
+            z-index: 1;
+        }
+
+        @keyframes blink {
+            from {
+                opacity: 1
+            }
+
+            50% {
+                opacity: 0.5
+            }
+
+            to {
+                opacity: 1
+            }
+        }
+
+        Window {
+            display: block;
+            position: fixed;
+
+            padding: 20px;
+
+            top: 150px;
+            left: 400px;
+
+            background-color: #333;
+            color: white;
+
+            width: calc(100vw - 840px);
+            height: calc(100vh - 340px);
+
+            border-radius: 10px;
+
+            z-index: 5;
+
+            opacity: 1;
+        }
+
+        Help {
+            display: block;
+            position: fixed;
+
+            padding: 0 50px;
+
+            overflow: scroll;
+
+            top: 150px;
+            left: 400px;
+
+            background-color: #333;
+            color: white;
+
+            width: calc(100vw - 840px);
+            height: calc(100vh - 340px);
+
+            border-radius: 10px;
+
+            z-index: 5;
+
+            opacity: 1;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            margin-bottom: -20px;
+        }
+
+        Window>bokes {
+            position: relative;
+            left: 0;
+            top: 0;
+
+            display: block;
+            max-width: 240px;
+        }
+
+        Window>bokes>thmingji>button {
+            background-color: transparent;
+            color: white;
+            border: none;
+            font-size: 1.5rem;
+            border-radius: 5px;
+            display: inline-block;
+            margin: 5px;
+
+            transition: color 0.3s ease-in-out;
+        }
+
+        Window>bokes>thmingji>button:hover {
+            color: rgb(112, 203, 255);
+        }
+
+        Window>bokes>thmingji>X {
+            font-family: sans-serif;
+            color: rgb(255, 119, 119);
+            border: 1px solid #444;
+            background-color: #444;
+            border-radius: 5px;
+            margin-left: 5px;
+            font-size: 1rem;
+            padding: 0px 3px;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        Window>bokes>thmingji {
+            display: block;
+            max-width: 240px;
+        }
+
+        Window>textarea {
+            position: fixed;
+            display: block;
+
+            border: 1px solid gray;
+            border-radius: 5px;
+
+            color: white;
+
+            background-color: transparent;
+
+            outline: none;
+
+            top: 180px;
+            left: 650px;
+
+            font-size: 1.5rem;
+
+            padding: 40px;
+
+            width: calc(100vw - 1170px);
+            height: 60%;
+        }
+
+        Files {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+
+            width: 100vw;
+            height: 100vh;
+
+            z-index: 1;
+
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        HelpWrapper {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+
+            width: 100vw;
+            height: 100vh;
+
+            z-index: 1;
+
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+    </style>
+
+    <Typescript />
+</body>

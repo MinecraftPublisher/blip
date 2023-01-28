@@ -1,0 +1,19 @@
+{
+  "name": "blip",
+  "module": "main.html",
+  "type": "module",
+  "scripts": {
+    "start": "bash run.sh",
+    "build": "bun run build.ts"
+  },
+  "devDependencies": {
+    "@types/uglify-js": "^3.17.1",
+    "bun-types": "^0.4.0"
+  },
+  "dependencies": {
+    "@vercel/ncc": "^0.36.1",
+    "chalk": "^5.2.0",
+    "localstorage-polyfill": "^1.0.1",
+    "uglify-js": "^3.17.4"
+  }
+}

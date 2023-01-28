@@ -1,0 +1,35 @@
+name: Blip build script
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Setup Bun Runtime
+      uses: antongolub/action-setup-bun@v1 # or @v1.x.x
+      with:
+        platform: 'linux'
+
+    - name: Run script
+      run: |
+        bun run build
+    
+    - name: GitHub Pages
+      uses: crazy-max/ghaction-github-pages@v3.1.0
+      with:
+        target_branch: gh_pages
+        build_dir: ./build/
+        
+        jekyll: false
+        verbose: true
+      
+      env:
+        GITHUB_TOKEN: ${{ secrets.TOKEN }}
