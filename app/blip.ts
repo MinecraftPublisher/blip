@@ -158,8 +158,8 @@ const _blip = ((stdout: stream, stdclear: stream): Blip => {
                         let ifnot = cmd === '!if'
 
                         let op = ' ' + (i.args.join(' ').match(/(==|!=|\|\||>|<|<=|>=)/g) || [])[0] + ' '
-                        let v1 = JSON.parse(i.args.join(' ').split(op)[0])
-                        let v2 = JSON.parse(i.args.join(' ').split(op)[0])
+                        let v1 = eval(i.args.join(' ').split(op)[0])
+                        let v2 = eval(i.args.join(' ').split(op)[0])
 
                         op = op.substring(1, op.length - 1)
 
@@ -339,7 +339,7 @@ const _blip = ((stdout: stream, stdclear: stream): Blip => {
                         })
                     } else if (i.args[0] === '=') {
                         let name = cmd
-                        let value = JSON.parse(i.args.slice(1).join(' '))
+                        let value = eval(i.args.slice(1).join(' '))
 
                         memory[name] = value
                     }

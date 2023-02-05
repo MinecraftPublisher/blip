@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+
+<head>
+    <title>blip</title>
+    <meta property="og:title" content="Blip" />
+    <meta property="og:type" content="website" />
+    <meta property="og:description" content="A programmable shell in the browser." />
+    <meta name="theme-color" content="#FF0000">
+</head>
+
+<body>
+    <HelpWrapper>
+        <Help>
+            <h1 magenta>Blip manual</h1>
+            <p>
+                Welcome to blip! Blip is a tiny little programming language embedded into a shell with a file editor and a manual that you are currently browsing. (Scroll down for more!)
+            </p>
+            <h2 cyan>Introduction</h2>
+            <h3 yellow>Syntax</h3>
+            <p>
+                Blip uses a command-argument-based syntax. An example of this would be: `command argument1 argument2\ still\ argument2`
+            </p>
+            <h3 yellow>Commands</h3>
+            <p>
+                Commands are the building blocks of blip. You can use pre-built commands such as the ones listed below, or define your own using functions. Here is a list of predefined functions and how to use them.
+            </p>
+            <h4 red>Comments</h4>
+            <p>
+                Both `#` and `//` are supported!
+            </p>
+            <h4 red>Echo</h4>
+            <p>
+                Use `echo TEXT` to write text to console
+            </p>
+            <h4 red>Clear</h4>
+            <p>
+                `clear` seems pretty self-explanatory. clears the text off the screen.
+            </p>
+            <h4 red>Wait</h4>
+            <p>
+                Specify an amount of ticks to delay the kernel for. Example: `wait 249` will halt the process for one second with the default tick rate of 249.
+            </p>
+            <h4 red>Write</h4>
+            <p>
+                Writes specified text to a file. Does not check if the file exists or not. Syntax: `write FILENAME CONTENT`. You can use `\n` to write a newline to the file. Example: `write test.txt line1\nline2\nhi! this is line3 :)`
+            </p>
+            <h4 red>Read</h4>
+            <p>
+                Reads a file from the filesystem into memory. Syntax: `read VARIABLE_NAME FILE_NAME`. An example would be: `read fcontent test.txt`
+            </p>
+            <h4 red>Conditions!</h4>
+            <p>
+                If conditions are met, If condition executes the commands, This is the paragraph explaining it. If indeting mattered, Then print `indenting mattered`. Indenting matters: `false`
+            </p>
+            <code block>
+                if 2 > 1 {<br>
+                    &nbsp&nbsp&nbsp&nbspecho Fair enough!<br>
+                    }<br>
+            </code>
+            <h4 red>Functions!</h4><br>
+            <code block>
+                function explanation {<br>
+                &nbsp&nbsp&nbsp&nbspecho Functions are the ones responsible for custom commands.<br>
+                &nbsp&nbsp&nbsp&nbspecho They have a syntax like the one stated above.<br>
+                }<br><br>
+                
+                function sayhello {<br>
+                &nbsp&nbsp&nbsp&nbspdefine name<br>
+                &nbsp&nbsp&nbsp&nbspecho hi [name]!<br>
+                }<br><br>
+
+                explanation<br>
+                sayhello Agent\ Z
+            </code>
+            <h4 red>Executing code at runtime</h4>
+            <p>
+                Pretty straightforward. Run the `run FILE_NAME` command to run the file. You can write content to the specified file beforehand, To use it as some sort of eval.
+            </p>
+            <h4 red>GET requests</h4><br>
+            <span yellow>WARNING: Syncrhonous performance!</span>
+            <p>
+                Downloads the content of a url. Use `download VARIABLE_NAME URL` to write the url's contents to the specified variable.
+            </p>
+            <h4 red>Declaring variables</h4>
+            <p>
+                `variables = "Piece of cake."`
+            </p>
+            <h4 red>Calling variables</h4>
+            <p>
+                Use the `[NAME]` syntax in any of the input into the kernel. Example: `echo Hi, [name]! Do you know how to declare variables? Simple! Just use: \[name]!`.
+            </p>
+            <h4 red>Depression</h4>
+            <p>
+                Try a <span cyan style="cursor: pointer" onclick="location.href = 'https://www.therecoveryvillage.com/mental-health/depression/depression-hotlines/'">hotline</span>. Use the `sadge` command.
+            </p>
+
+            <br>
+        </Help>
+    </HelpWrapper>
+
+    <Files>
+        <Window></Window>
+    </Files>
+
+    <Terminal></Terminal>
+
+    <style>
+        body {
+            background-color: #111;
+            padding: 2rem;
+            padding-left: 2rem;
+            font-family: monospace;
+            font-size: 2rem;
+
+            scroll-behavior: smooth;
+            color: white;
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        * {
+            user-select: none;
+        }
+
+        html {
+            height: 100vh;
+            width: 100vw;
+        }
+
+        *[red] {
+            color: rgb(239, 101, 101)
+        }
+
+        *[green] {
+            color: rgb(116, 255, 116)
+        }
+
+        *[yellow] {
+            color: rgb(255, 248, 112)
+        }
+
+        *[cyan] {
+            color: rgb(102, 255, 255)
+        }
+
+        *[purple] {
+            color: rgb(255, 109, 255)
+        }
+
+        *[blue] {
+            color: rgb(95, 129, 255);
+        }
+
+        *[magenta] {
+            color: rgb(185, 87, 255);
+        }
+
+        *[bold] {
+            font-weight: bold
+        }
+
+        code {
+            background-color: rgba(37, 37, 37, 0.6);
+            border-radius: 5px;
+            padding: 2px 10px;
+            color: rgb(142, 255, 178);
+        }
+
+        code[block] {
+            display: block;
+        }
+
+        Terminal {
+            width: 100vw;
+            height: 100vh;
+            outline: none;
+            user-select: none;
+            caret-color: transparent;
+        }
+
+        Terminal::after {
+            font-size: 1.8rem;
+            margin-left: 2px;
+            content: '|';
+            color: white;
+            background-color: white;
+            border-radius: 2px;
+            animation: blink 1s ease-in-out infinite;
+
+            z-index: 1;
+        }
+
+        @keyframes blink {
+            from {
+                opacity: 1
+            }
+
+            50% {
+                opacity: 0.5
+            }
+
+            to {
+                opacity: 1
+            }
+        }
+
+        Window {
+            display: block;
+            position: fixed;
+
+            padding: 20px;
+
+            top: 150px;
+            left: 400px;
+
+            background-color: #333;
+            color: white;
+
+            width: calc(100vw - 840px);
+            height: calc(100vh - 340px);
+
+            border-radius: 10px;
+
+            z-index: 5;
+
+            opacity: 1;
+        }
+
+        Help {
+            display: block;
+            position: fixed;
+
+            padding: 0 50px;
+
+            overflow: scroll;
+
+            top: 150px;
+            left: 400px;
+
+            background-color: #333;
+            color: white;
+
+            width: calc(100vw - 840px);
+            height: calc(100vh - 340px);
+
+            border-radius: 10px;
+
+            z-index: 5;
+
+            opacity: 1;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            margin-bottom: -20px;
+        }
+
+        Window>bokes {
+            position: relative;
+            left: 0;
+            top: 0;
+
+            display: block;
+            max-width: 240px;
+        }
+
+        Window>bokes>thmingji>button {
+            background-color: transparent;
+            color: white;
+            border: none;
+            font-size: 1.5rem;
+            border-radius: 5px;
+            display: inline-block;
+            margin: 5px;
+
+            transition: color 0.3s ease-in-out;
+        }
+
+        Window>bokes>thmingji>button:hover {
+            color: rgb(112, 203, 255);
+        }
+
+        Window>bokes>thmingji>X {
+            font-family: sans-serif;
+            color: rgb(255, 119, 119);
+            border: 1px solid #444;
+            background-color: #444;
+            border-radius: 5px;
+            margin-left: 5px;
+            font-size: 1rem;
+            padding: 0px 3px;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        Window>bokes>thmingji {
+            display: block;
+            max-width: 240px;
+        }
+
+        Window>textarea {
+            position: fixed;
+            display: block;
+
+            border: 1px solid gray;
+            border-radius: 5px;
+
+            color: white;
+
+            background-color: transparent;
+
+            outline: none;
+
+            top: 180px;
+            left: 650px;
+
+            font-size: 1.5rem;
+
+            padding: 40px;
+
+            width: calc(100vw - 1170px);
+            height: 60%;
+        }
+
+        Files {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+
+            width: 100vw;
+            height: 100vh;
+
+            z-index: 1;
+
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        HelpWrapper {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+
+            width: 100vw;
+            height: 100vh;
+
+            z-index: 1;
+
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+    </style>
+
+    <script transpiled>/* automatically transpiled from typescript by bun transpiler */
+const version="1.2.1";function http(e){var t=new XMLHttpRequest;return t.open("GET",e,!1),t.send(null),t.responseText}function escapeHtml(e){return e.replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}function mulberry32(t){return function(){var e=t+=1831565813,e=Math.imul(e^e>>>15,1|e);return(((e^=e+Math.imul(e^e>>>7,61|e))^e>>>14)>>>0)/4294967296}}let modules={};const _blip=(b,y)=>{let n=[],t=-1e5,r=0,w=0,l=[],a=0,v=0,o="";const i=e=>{b("<span cyan>blip kernel</span>\n<span magenta bold>v"+version+"</span>"+(localStorage.getItem("notice-done")??'\n<span yellow>use the "help" command to see available commands, or use the "files" command to edit files.</span>')),localStorage.setItem("notice-done",""),t=parseInt(setInterval(()=>{if(0===r){if(0<w)return w--;if(a%10==0?(localStorage.setItem("blip-fs",JSON.stringify(E)),a=1):a++,r++,0<n.length){let t=n[0];const T=s=>{let c=0;o=s.arr.map(e=>e.cmd+" "+e.args.join(" ")).join("\n");for(let i=0;i<s.arr.length;i++){if(0<c)return c--;v=i;let o=s.arr[i];var e,t,n=o.cmd;if("#"!==n&&"//"!==n&&""!==n)if("echo"===n)b(...o.args);else if("clear"===n)y();else if("wait"===n)w+=parseInt(o.args[0]);else if("write"===n)E[o.args[0]]=o.args.slice(1).join(" ").replaceAll("\\n","\n");else if("read"===n)j[o.args[0]]=E[o.args.slice(1).join(" ")];else if("if"===n||"!if"===n){var r="!if"===n;let e=" "+(o.args.join(" ").match(/(==|!=|\|\||>|<|<=|>=)/g)||[])[0]+" ";var l=(0,eval)(o.args.join(" ").split(e)[0]),a=(0,eval)(o.args.join(" ").split(e)[0]);let t=!1;var m=e=>"true"===e,m=("=="===(e=e.substring(1,e.length-1))?t=l===a:"!="===e?t=l!==a:"||"===e?t=m(l)||m(a):"&&"===e?t=m(l)&&m(a):">"===e||"<"===e?t=parseInt(l)>parseInt(a):">="===e||"<="===e?t=parseInt(l)>=parseInt(a):b('error: unsupported condition "'+e+'"'),(e=>{var t=Math.floor(1e20*S()),n={time:+new Date,id:t,arr:[]};let r=o.cmd+o.args.join(" "),l=0,a=i+c;for(;(!r.startsWith("}")||0!==l)&&s.arr.length>a;)a=i+c,"}"===s.arr[a].cmd&&0<l&&l--,r=s.arr[a].cmd+s.arr[a].args.join(" "),e.includes(s.arr[a].cmd)?l++:n.arr.push(s.arr[a]),c++;return n.arr=n.arr.slice(0,n.arr.length-1),n})(["if","!if"]));(t&&!r||!t&&r)&&T(m)}else if("function"===n){l=o.args[0],a=(e=>{var t=Math.floor(1e20*S()),n={time:+new Date,id:t,arr:[]};let r=o.cmd+o.args.join(" "),l=0,a=i+c;for(;(!r.startsWith("}")||0!==l)&&s.arr.length>a;)a=i+c,"}"===s.arr[a].cmd&&0<l&&l--,r=s.arr[a].cmd+" "+s.arr[a].args.join(" "),e.includes(s.arr[a].cmd)?l++:n.arr.push(s.arr[a]),c++;return n.arr=n.arr.slice(0,n.arr.length-1),n})(["function"]);let e=a.arr.map(e=>e.cmd+" "+e.args.join(" ")).join("\n");r=(e.match(/^(define .+\n{0,1})+/g)||[]).map(e=>e.substring(0,e.length-1).split(" ").slice(1).join(" ")),m=(e=e.replaceAll(/^(define .+\n{0,1})+/g,""),a.arr=e.split("\n").map(e=>({cmd:e.split(" ")[0],args:e.split(" ").slice(1)})),{function:!0,name:l,args:r,data:a});j[l]=m}else if("define"===n)b("<span yellow>warning: define is not supported outside of functions and therefore has no effect.</span>");else if("run"===n)E[o.args.join(" ")]?A.run(E[o.args.join(" ")]):b('error: file not found: "'+o.args.join(" ")+'"');else if("download"===n){var d=o.args[0],u=o.args.slice(1).join(" ");j[d]=escapeHtml(http(u))}else if("import"===n){var p,d=http(o.args.join(" ")),g=JSON.parse(d);for(p in g){let a=g[p];modules[a.name]=(e,t,n,r,l)=>(console.log(a.function),(0,eval)(`(_cmd, _args, _fs, _memory, _shell) => {
+                                    let cmd = _cmd ?? null
+                                    let args = _args ?? null
+                                    let fs = _fs ?? null
+                                    let memory = _memory ?? null
+                                    let shell = _shell ?? null
+
+                                    let stdout = _shell.stdout
+
+                                    ${a.function}
+                                }`)(e,t,n,r,l))}}else if("sadge"===n)b("<span cyan>:(</span>");else if(j[n]&&!0===j[n].function){var f,h={...j[n]},u=h.args.map((e,t)=>({name:e,value:o.args[t]||"undefined"}));let e=h.data.arr.map(e=>e.cmd+" "+e.args.join(" ")).join("DIVIDER\nDIVIDER");for(f of u)console.log(f,h),f.value&&(e=e.replaceAll("["+f.name+"]",f.value.toString()));T({id:S(),time:+new Date,arr:e.split("DIVIDER\nDIVIDER").map(e=>({cmd:e.split(" ")[0],args:e.split(" ").slice(1)}))})}else"="===o.args[0]?(e=n,t=(0,eval)(o.args.slice(1).join(" ")),j[e]=t):modules[o.cmd]?modules[o.cmd](n,o.args,E,j,A):b('error: unknown command "'+n+'" in line "'+o.cmd+" "+o.args.join(" ")+'"')}};T(t),0===(n=n.filter(e=>e.id!==t.id)).length&&b(null)}r--}},249<1e3/e?249:1e3/e).toString())};let S=mulberry32(Math.random()*+new Date),E={},j={};const A={stdin:(...e)=>l.push(e),stdout:b,stdclear:y,line:()=>v+1,code:()=>o,filesystem:e=>(e&&delete E[e],E),memory:()=>j,write:(e,t)=>E[e]=t,build:(e=20)=>{E=JSON.parse(localStorage.getItem("blip-fs"))||{},i(e),E["main.blip"]?A.run("run main.blip"):b(null),A.build=()=>{throw"kernel error: Cannot build a kernel that is already built"},A.stop=()=>{clearInterval(t),localStorage.setItem("blip-fs",JSON.stringify(E)),j={},E={}}},stop:()=>{throw"kernel error: Cannot stop a kernel that is not loaded yet"},run:e=>{var t=Math.floor(1e20*S()),e=e.replaceAll("\r","").replaceAll(/function [^}]+ {\n([^}]+\n)+}/g,e=>e.replaceAll(/[^\\]\[[^\]]+\]/g,e=>e.substring(0,1)+"\\"+e.substring(1))).split("\n").map(e=>{let t=e??"";for(;t.startsWith(" ");)t=t.substring(1);for(;t.match(/[^\\]\[[^\]]+\]/g);)t=t.replaceAll(/[^\\]\[[^\]]+\]/g,e=>e.substring(0,1)+j[e.substring(2,e.length-1)]);var e=(t=t.replaceAll(/\\\[[^\]]+\]/g,e=>e.substring(1))).split(" ")[0],n=mulberry32(+new Date*Math.random()*128378);let r=Math.floor(Math.random()*n()*200).toString();return{cmd:e,args:t.replaceAll("\\ ",r).split(" ").slice(1).map(e=>e.replaceAll(r," "))??[]}});n.push({time:+new Date,id:t,arr:e})}};return A},Terminal=document.querySelector("terminal"),Files=document.querySelector("files"),Help=document.querySelector("HelpWrapper"),Window=document.querySelector("window");function escapeHtml(e){return e.replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}function setEndOfContenteditable(e){Terminal.innerHTML.includes("<br><br>")&&(Terminal.innerHTML=Terminal.innerHTML.replaceAll("<br><br>","<br>")),Terminal.innerHTML.startsWith("<br>")&&(Terminal.innerHTML=Terminal.innerHTML.substring(4));let t,n;document.createRange?((t=document.createRange()).selectNodeContents(e),t.collapse(!1),(n=window.getSelection()).removeAllRanges(),n.addRange(t)):document.selection&&((t=document.body.createTextRange()).moveToElementText(e),t.collapse(!1),t.select())}Terminal.setAttribute("contenteditable",""),Terminal.setAttribute("spellcheck","false");let add_command_input=0;const files=()=>{Files.style.display="block",shell.stdout("<br>opening blip file explorer...")},help=()=>{Help.style.display="block",shell.stdout("<br>opening blip manual...")};let window_click=!0,fs=(Files.onclick=()=>{window_click||(Files.style.display="none",shell.stdout(null))},Help.onclick=()=>{window_click||(Help.style.display="none",shell.stdout(null))},{ok:"øk"});const deepCompare=(t,n)=>Object.prototype.toString.call(t)===Object.prototype.toString.call(n)&&("[object Object]"===Object.prototype.toString.call(t)||"[object Array]"===Object.prototype.toString.call(t)?Object.keys(t).length===Object.keys(n).length&&Object.keys(t).every(e=>deepCompare(t[e],n[e])):t===n);var file_name="";let files__={};function getCursorPos(t){if("selectionStart"in t&&document.activeElement==t)return{start:t.selectionStart,end:t.selectionEnd};if(t.createTextRange){var n=document.selection.createRange();if(n.parentElement()===t){var r,l=t.createTextRange();l.moveToBookmark(n.getBookmark());let e;for(e=0;0<l.compareEndPoints("EndToStart",l);l.moveEnd("character",-1))e++;for(l.setEndPoint("StartToStart",t.createTextRange()),r={start:0,end:e};0<l.compareEndPoints("EndToStart",l);l.moveEnd("character",-1))r.start++,r.end++;return r}}return{start:-1,end:-1}}function getCaretPosition(e){var t,n,r=0;return window.getSelection?(t=window.getSelection()).rangeCount&&(n=t.getRangeAt(0)).commonAncestorContainer.parentNode==e&&(r=n.endOffset):document.selection&&document.selection.createRange&&(n=document.selection.createRange()).parentElement()==e&&(t=document.createElement("span"),e.insertBefore(t,e.firstChild),(e=n.duplicate()).moveToElementText(t),e.setEndPoint("EndToEnd",n),r=e.text.length),r}const switch_file=e=>{file_name=e,files__[e]||(document.querySelector("Window > textarea").value=shell.filesystem()[e]||"",files__[e]="")},opodato=()=>{var n={...shell.filesystem()},r=(()=>{try{return document.querySelector("Window > textarea").value}catch{return""}})();if(!deepCompare(n,fs)){var l="";fs={...n};let e=Object.keys(fs).map(e=>({name:e,data:fs[e]})).map(e=>`<thmingji><button onclick="switch_file('${e.name}')"><span purple>-</span> ${e.name}</button><X onclick="shell.filesystem('${e.name}'); file_name = ''; opodato();">x</X></thmingji>`);l+=`<bokes><thmingji><button onclick="switch_file(prompt('enter file name:'))"><span green>+</span> new file</button></thmingji>`+(e=0==e.length?["<thmingji><button>No files found...</button></thmingji>"]:e).join("")+`</bokes><textarea spellcheck="false">${r}</textarea>`;let t;document.querySelector("Window > textarea")&&(t=getCursorPos(document.querySelector("Window > textarea"))),Window.innerHTML=l,""!=r&&(document.querySelector("Window > textarea").focus(),document.querySelector("Window > textarea").setSelectionRange(t.start,t.end))}""!=file_name&&shell.write(file_name,document.querySelector("textarea").value)};let mouse=!0,crashed=(Terminal.onmouseenter=()=>mouse=!0,Terminal.onmouseleave=()=>mouse=!1,!1);function mulberry32(t){return function(){var e=t+=1831565813,e=Math.imul(e^e>>>15,1|e);return(((e^=e+Math.imul(e^e>>>7,61|e))^e>>>14)>>>0)/4294967296}}Terminal.onkeydown=e=>{var t=e.key;if(Terminal&&mouse&&setEndOfContenteditable(Terminal),(1===t.length||t.startsWith("Back"))&&!e.controlKey&&!e.metaKey&&crashed)return!1;if((e.metaKey||e.controlKey)&&"r"===t&&location.reload(),"Enter"!==t)return!t.startsWith("Arrow")&&!(t.startsWith("Back")&&Terminal.innerText.endsWith("~> ")||t.startsWith("Back")&&(e.metaKey||e.controlKey))&&(t.startsWith("Back")&&Terminal.innerHTML.endsWith("<br>")?(Terminal.innerHTML=Terminal.innerHTML.substring(0,Terminal.innerHTML.length-4),!1):t.startsWith("Back")?(Terminal.innerHTML=Terminal.innerHTML.substring(0,Terminal.innerHTML.length-1),!1):("a"!==t||!e.metaKey&&!e.controlKey)&&(e.metaKey||e.controlKey||1!==t.length?void 0:(Terminal.innerHTML=Terminal.innerHTML+t,!1)));{let e=Terminal.innerText.split("~> ")[Terminal.innerText.split("~> ").length-1];"sadge"===(e=e.toLowerCase())&&(console.log("Sadge triggered."),shell.stdout("<br><span cyan>Sorry to hear that.</span>"),CozyPlace());const n=mulberry32(Math.random()*+new Date),r=()=>Math.floor(255*n()),l=()=>`rgb(${r()}, ${r()}, ${r()})`;return"files"===e?files():"help"===e?help():"explode"===e?(crashed=!0,Terminal.setAttribute("contentEditable","false"),shell.stdout("\nEPILEPSY WARNING!\nCLOSE THE WEBSITE NOW IF YOU HAVE EPILEPSY OR ANY TYPE OF PHOTOSENSITIVITY!"),setTimeout(()=>{shell.stdout("\nTWO SECONDS LEFT TO CLOSE THE WEBSITE!!"),setTimeout(()=>{setInterval(()=>{shell.stdout("\n<span red>Boom!</span>"),document.querySelectorAll("*").forEach(e=>{e.style="font-size: "+3*Math.random()+"rem !important; color: "+l()+"; background-color: "+l()+";"})},10)},2e3)},2e3)):shell.run(e),!0}},document.documentElement.onclick=()=>{window_click||Terminal.focus()};const shell=_blip((...e)=>{null===e[0]?Terminal.innerHTML+='<br><span contenteditable="false" red>~> </span> ':(e[0]?.startsWith("error: ")?Terminal.innerHTML+=`<span red>${e.join(" ").replaceAll("\n","<br>")}</span><br>`:Terminal.innerHTML+=e.join(" ").replaceAll("\n","<br>")+"<br>",window.scrollTo({top:document.body.scrollHeight,left:0,behavior:"smooth"}))},(e=0)=>{Terminal.innerHTML=""});Terminal.focus(),setInterval(opodato,100);let tm_data="";setInterval(()=>{tm_data!==Terminal.innerHTML&&(tm_data=Terminal.innerHTML,Terminal.innerHTML=Terminal.innerHTML.replaceAll(/<span {0,1}[^>]+>[^<]*<br>/g,e=>e.replaceAll("<br>","")),setEndOfContenteditable(Terminal))},10),window.onerror=e=>{shell.stop(),shell.stdout("error: KERNEL crashed - <span cyan>Line: "+shell.line()+"</span>\nCode:\n \n<span purple bold>"+shell.code()+"</span>\n \nReason:\n<span yellow>"+e.toString()+"</span>"),crashed=!0,Terminal.setAttribute("contentEditable","false")},Help.innerHTML=Help.innerHTML.replaceAll(/blip/gi,e=>"<span bold green>"+e+"</span>").replaceAll("<span bold green>Blip</span> manual","Blip manual").replaceAll(/`[^`]+`/g,e=>"<code>"+e.substring(1,e.length-1)+"</code>");const CozyPlace=()=>setTimeout(()=>{var e=new Audio("https://www.chosic.com/wp-content/uploads/2022/04/Cozy-Place-Chill-Background-Music.mp3");e.loop=!0,e.play()});shell.build(249);
+</script>
+</body>
