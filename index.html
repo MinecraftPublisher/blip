@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+
+<head>
+    <title>blip</title>
+    <meta property="og:title" content="Blip" />
+    <meta property="og:type" content="website" />
+    <meta property="og:description" content="A programmable shell in the browser." />
+    <meta name="theme-color" content="#FF0000">
+</head>
+
+<body>
+    <HelpWrapper>
+        <Help>
+            <h1 magenta>Blip manual</h1>
+            <p>
+                Welcome to blip! Blip is a tiny little programming language embedded into a shell with a file editor and a manual that you are currently browsing. (Scroll down for more!)
+            </p>
+            <h2 cyan>Introduction</h2>
+            <h3 yellow>Syntax</h3>
+            <p>
+                Blip uses a command-argument-based syntax. An example of this would be: `command argument1 argument2\ still\ argument2`
+            </p>
+            <h3 yellow>Commands</h3>
+            <p>
+                Commands are the building blocks of blip. You can use pre-built commands such as the ones listed below, or define your own using functions. Here is a list of predefined functions and how to use them.
+            </p>
+            <h4 red>Comments</h4>
+            <p>
+                Both `#` and `//` are supported!
+            </p>
+            <h4 red>Echo</h4>
+            <p>
+                Use `echo TEXT` to write text to console
+            </p>
+            <h4 red>Clear</h4>
+            <p>
+                `clear` seems pretty self-explanatory. clears the text off the screen.
+            </p>
+            <h4 red>Wait</h4>
+            <p>
+                Specify an amount of ticks to delay the kernel for. Example: `wait 249` will halt the process for one second with the default tick rate of 249.
+            </p>
+            <h4 red>Write</h4>
+            <p>
+                Writes specified text to a file. Does not check if the file exists or not. Syntax: `write FILENAME CONTENT`. You can use `\n` to write a newline to the file. Example: `write test.txt line1\nline2\nhi! this is line3 :)`
+            </p>
+            <h4 red>Read</h4>
+            <p>
+                Reads a file from the filesystem into memory. Syntax: `read VARIABLE_NAME FILE_NAME`. An example would be: `read fcontent test.txt`
+            </p>
+            <h4 red>Conditions!</h4>
+            <p>
+                If conditions are met, If condition executes the commands, This is the paragraph explaining it. If indeting mattered, Then print `indenting mattered`. Indenting matters: `false`
+            </p>
+            <code block>
+                if 2 > 1 {<br>
+                    &nbsp&nbsp&nbsp&nbspecho Fair enough!<br>
+                    }<br>
+            </code>
+            <h4 red>Functions!</h4><br>
+            <code block>
+                function explanation {<br>
+                &nbsp&nbsp&nbsp&nbspecho Functions are the ones responsible for custom commands.<br>
+                &nbsp&nbsp&nbsp&nbspecho They have a syntax like the one stated above.<br>
+                }<br><br>
+                
+                function sayhello {<br>
+                &nbsp&nbsp&nbsp&nbspdefine name<br>
+                &nbsp&nbsp&nbsp&nbspecho hi [name]!<br>
+                }<br><br>
+
+                explanation<br>
+                sayhello Agent\ Z
+            </code>
+            <h4 red>Executing code at runtime</h4>
+            <p>
+                Pretty straightforward. Run the `run FILE_NAME` command to run the file. You can write content to the specified file beforehand, To use it as some sort of eval.
+            </p>
+            <h4 red>GET requests</h4><br>
+            <span yellow>WARNING: Syncrhonous performance!</span>
+            <p>
+                Downloads the content of a url. Use `download VARIABLE_NAME URL` to write the url's contents to the specified variable.
+            </p>
+            <h4 red>Declaring variables</h4>
+            <p>
+                `variables = "Piece of cake."`
+            </p>
+            <h4 red>Calling variables</h4>
+            <p>
+                Use the `[NAME]` syntax in any of the input into the kernel. Example: `echo Hi, [name]! Do you know how to declare variables? Simple! Just use: \[name]!`.
+            </p>
+            <h4 red>Depression</h4>
+            <p>
+                Try a <span cyan style="cursor: pointer" onclick="location.href = 'https://www.therecoveryvillage.com/mental-health/depression/depression-hotlines/'">hotline</span>. Use the `sadge` command.
+            </p>
+
+            <br>
+        </Help>
+    </HelpWrapper>
+
+    <Files>
+        <Window></Window>
+    </Files>
+
+    <Terminal></Terminal>
+
+    <style>
+        body {
+            background-color: #111;
+            padding: 2rem;
+            padding-left: 2rem;
+            font-family: monospace;
+            font-size: 2rem;
+
+            scroll-behavior: smooth;
+            color: white;
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        * {
+            user-select: none;
+        }
+
+        html {
+            height: 100vh;
+            width: 100vw;
+        }
+
+        *[red] {
+            color: rgb(239, 101, 101)
+        }
+
+        *[green] {
+            color: rgb(116, 255, 116)
+        }
+
+        *[yellow] {
+            color: rgb(255, 248, 112)
+        }
+
+        *[cyan] {
+            color: rgb(102, 255, 255)
+        }
+
+        *[purple] {
+            color: rgb(255, 109, 255)
+        }
+
+        *[blue] {
+            color: rgb(95, 129, 255);
+        }
+
+        *[magenta] {
+            color: rgb(185, 87, 255);
+        }
+
+        *[bold] {
+            font-weight: bold
+        }
+
+        code {
+            background-color: rgba(37, 37, 37, 0.6);
+            border-radius: 5px;
+            padding: 2px 10px;
+            color: rgb(142, 255, 178);
+        }
+
+        code[block] {
+            display: block;
+        }
+
+        Terminal {
+            width: 100vw;
+            height: 100vh;
+            outline: none;
+            user-select: none;
+            caret-color: transparent;
+        }
+
+        Terminal::after {
+            font-size: 1.8rem;
+            margin-left: 2px;
+            content: '|';
+            color: white;
+            background-color: white;
+            border-radius: 2px;
+            animation: blink 1s ease-in-out infinite;
+
+            z-index: 1;
+        }
+
+        @keyframes blink {
+            from {
+                opacity: 1
+            }
+
+            50% {
+                opacity: 0.5
+            }
+
+            to {
+                opacity: 1
+            }
+        }
+
+        Window {
+            display: block;
+            position: fixed;
+
+            padding: 20px;
+
+            top: 150px;
+            left: 400px;
+
+            background-color: #333;
+            color: white;
+
+            width: calc(100vw - 840px);
+            height: calc(100vh - 340px);
+
+            border-radius: 10px;
+
+            z-index: 5;
+
+            opacity: 1;
+        }
+
+        Help {
+            display: block;
+            position: fixed;
+
+            padding: 0 50px;
+
+            overflow: scroll;
+
+            top: 150px;
+            left: 400px;
+
+            background-color: #333;
+            color: white;
+
+            width: calc(100vw - 840px);
+            height: calc(100vh - 340px);
+
+            border-radius: 10px;
+
+            z-index: 5;
+
+            opacity: 1;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            margin-bottom: -20px;
+        }
+
+        Window>bokes {
+            position: relative;
+            left: 0;
+            top: 0;
+
+            display: block;
+            max-width: 240px;
+        }
+
+        Window>bokes>thmingji>button {
+            background-color: transparent;
+            color: white;
+            border: none;
+            font-size: 1.5rem;
+            border-radius: 5px;
+            display: inline-block;
+            margin: 5px;
+
+            transition: color 0.3s ease-in-out;
+        }
+
+        Window>bokes>thmingji>button:hover {
+            color: rgb(112, 203, 255);
+        }
+
+        Window>bokes>thmingji>X {
+            font-family: sans-serif;
+            color: rgb(255, 119, 119);
+            border: 1px solid #444;
+            background-color: #444;
+            border-radius: 5px;
+            margin-left: 5px;
+            font-size: 1rem;
+            padding: 0px 3px;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        Window>bokes>thmingji {
+            display: block;
+            max-width: 240px;
+        }
+
+        Window>textarea {
+            position: fixed;
+            display: block;
+
+            border: 1px solid gray;
+            border-radius: 5px;
+
+            color: white;
+
+            background-color: transparent;
+
+            outline: none;
+
+            top: 180px;
+            left: 650px;
+
+            font-size: 1.5rem;
+
+            padding: 40px;
+
+            width: calc(100vw - 1170px);
+            height: 60%;
+        }
+
+        Files {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+
+            width: 100vw;
+            height: 100vh;
+
+            z-index: 1;
+
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        HelpWrapper {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+
+            width: 100vw;
+            height: 100vh;
+
+            z-index: 1;
+
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+    </style>
+
+    <script transpiled>/* automatically transpiled from typescript by bun transpiler */
+const version = "1.2.1";
+function http(url) {
+  let xmlHttp = new XMLHttpRequest;
+  xmlHttp.open("GET", url, false);
+  xmlHttp.send(null);
+  return xmlHttp.responseText;
+}
+function escapeHtml(unsafe) {
+  return unsafe.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;");
+}
+function mulberry32(a) {
+  return function() {
+    let t = a += 1831565813;
+    t = Math.imul(t ^ t >>> 15, t | 1);
+    t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+let modules = {};
+const _blip = (stdout, stdclear) => {
+  let kernel_input = [];
+  let kernel_interval = -1e5;
+  let kernel_count = 0;
+  let kernel_wait = 0;
+  let stdin_data = [];
+  let kernel_i = 0;
+  let kernel_line = 0;
+  let kernel_code = "";
+  const kernel = () => {
+    if (kernel_count !== 0)
+      return;
+    if (kernel_wait > 0)
+      return kernel_wait--;
+    if (kernel_i % 10 === 0) {
+      localStorage.setItem("blip-fs", JSON.stringify(fs));
+      kernel_i = 1;
+    } else
+      kernel_i++;
+    kernel_count++;
+    if (kernel_input.length > 0) {
+      let j = kernel_input[0];
+      const interop = (j) => {
+        let skip_line = 0;
+        kernel_code = j.arr.map((e) => e.cmd + " " + e.args.join(" ")).join("\n");
+        for (let i2 = 0;i2 < j.arr.length; i2++) {
+          if (skip_line > 0)
+            return skip_line--;
+          kernel_line = i2;
+          let i = j.arr[i2];
+          let cmd = i.cmd;
+          if (cmd === "#" || cmd === "//" || cmd === "")
+            ;
+          else if (cmd === "echo")
+            stdout(...i.args);
+          else if (cmd === "clear")
+            stdclear();
+          else if (cmd === "wait")
+            kernel_wait += parseInt(i.args[0]);
+          else if (cmd === "write")
+            fs[i.args[0]] = i.args.slice(1).join(" ").replaceAll("\\n", "\n");
+          else if (cmd === "read")
+            memory[i.args[0]] = fs[i.args.slice(1).join(" ")];
+          else if (cmd === "if" || cmd === "!if") {
+            let ifnot = cmd === "!if";
+            let op = " " + (i.args.join(" ").match(/(==|!=|\|\||>|<|<=|>=)/g) || [])[0] + " ";
+            let v1 = (0, eval)(i.args.join(" ").split(op)[0]);
+            let v2 = (0, eval)(i.args.join(" ").split(op)[0]);
+            op = op.substring(1, op.length - 1);
+            let output = false;
+            const bf = (f) => f === "true" ? true : false;
+            if (op === "==")
+              output = v1 === v2;
+            else if (op === "!=")
+              output = v1 !== v2;
+            else if (op === "||")
+              output = bf(v1) || bf(v2);
+            else if (op === "&&")
+              output = bf(v1) && bf(v2);
+            else if (op === ">")
+              output = parseInt(v1) > parseInt(v2);
+            else if (op === "<")
+              output = parseInt(v1) > parseInt(v2);
+            else if (op === ">=")
+              output = parseInt(v1) >= parseInt(v2);
+            else if (op === "<=")
+              output = parseInt(v1) >= parseInt(v2);
+            else
+              stdout('error: unsupported condition "' + op + '"');
+            const run_code = (exps) => {
+              let id = Math.floor(rnd() * 100000000000000000000);
+              let output_if = {
+                time: +new Date,
+                id,
+                arr: []
+              };
+              let prev_line = i.cmd + i.args.join(" ");
+              let if_count = 0;
+              let i3 = i2 + skip_line;
+              while (!(prev_line.startsWith("}") && if_count === 0) && j.arr.length > i3) {
+                i3 = i2 + skip_line;
+                if (j.arr[i3].cmd === "}" && if_count > 0)
+                  if_count--;
+                prev_line = j.arr[i3].cmd + j.arr[i3].args.join(" ");
+                if (exps.includes(j.arr[i3].cmd))
+                  if_count++;
+                else
+                  output_if.arr.push(j.arr[i3]);
+                skip_line++;
+              }
+              output_if.arr = output_if.arr.slice(0, output_if.arr.length - 1);
+              return output_if;
+            };
+            let code = run_code(["if", "!if"]);
+            if (output && !ifnot)
+              interop(code);
+            else if (!output && ifnot)
+              interop(code);
+          } else if (cmd === "function") {
+            let name = i.args[0];
+            const run_code = (exps) => {
+              let id = Math.floor(rnd() * 100000000000000000000);
+              let output_dev = {
+                time: +new Date,
+                id,
+                arr: []
+              };
+              let prev_line = i.cmd + i.args.join(" ");
+              let dev_count = 0;
+              let i3 = i2 + skip_line;
+              while (!(prev_line.startsWith("}") && dev_count === 0) && j.arr.length > i3) {
+                i3 = i2 + skip_line;
+                if (j.arr[i3].cmd === "}" && dev_count > 0)
+                  dev_count--;
+                prev_line = j.arr[i3].cmd + " " + j.arr[i3].args.join(" ");
+                if (exps.includes(j.arr[i3].cmd))
+                  dev_count++;
+                else
+                  output_dev.arr.push(j.arr[i3]);
+                skip_line++;
+              }
+              output_dev.arr = output_dev.arr.slice(0, output_dev.arr.length - 1);
+              return output_dev;
+            };
+            let raw = run_code(["function"]);
+            let data = raw.arr.map((e) => e.cmd + " " + e.args.join(" ")).join("\n");
+            let args = (data.match(/^(define .+\n{0,1})+/g) || []).map((e) => e.substring(0, e.length - 1).split(" ").slice(1).join(" "));
+            data = data.replaceAll(/^(define .+\n{0,1})+/g, "");
+            raw.arr = data.split("\n").map((e) => {
+              return {
+                cmd: e.split(" ")[0],
+                args: e.split(" ").slice(1)
+              };
+            });
+            let func_obj = {
+              function: true,
+              name,
+              args,
+              data: raw
+            };
+            memory[name] = func_obj;
+          } else if (cmd === "define")
+            stdout("<span yellow>warning: define is not supported outside of functions and therefore has no effect.</span>");
+          else if (cmd === "run")
+            if (fs[i.args.join(" ")])
+              blip_shell.run(fs[i.args.join(" ")]);
+            else
+              stdout('error: file not found: "' + i.args.join(" ") + '"');
+          else if (cmd === "download") {
+            let filename = i.args[0];
+            let url = i.args.slice(1).join(" ");
+            memory[filename] = escapeHtml(http(url));
+          } else if (cmd === "import") {
+            let url = i.args.join(" ");
+            let con = http(url);
+            let json = JSON.parse(con);
+            for (let i in json) {
+              let obj = json[i];
+              modules[obj.name] = (cmd, args, fs, memory, shell) => {
+                console.log(obj.function);
+                return (0, eval)(`(_cmd, _args, _fs, _memory, _shell) => {
+                                    let cmd = _cmd ?? null
+                                    let args = _args ?? null
+                                    let fs = _fs ?? null
+                                    let memory = _memory ?? null
+                                    let shell = _shell ?? null
+
+                                    let stdout = _shell.stdout
+
+                                    ${obj.function}
+                                }`)(cmd, args, fs, memory, shell);
+              };
+            }
+          } else if (cmd === "sadge")
+            stdout("<span cyan>:(</span>");
+          else if (memory[cmd] && memory[cmd].function === true) {
+            let fn = { ...memory[cmd] };
+            let args = fn.args.map((e, n) => {
+              return {
+                name: e,
+                value: i.args[n] || "undefined"
+              };
+            });
+            let _data = fn.data.arr.map((e) => {
+              return e.cmd + " " + e.args.join(" ");
+            }).join("DIVIDER\nDIVIDER");
+            for (let arg of args) {
+              console.log(arg, fn);
+              if (arg.value)
+                _data = _data.replaceAll("[" + arg.name + "]", arg.value.toString());
+            }
+            interop({
+              id: rnd(),
+              time: +new Date,
+              arr: _data.split("DIVIDER\nDIVIDER").map((e) => {
+                return {
+                  cmd: e.split(" ")[0],
+                  args: e.split(" ").slice(1)
+                };
+              })
+            });
+          } else if (i.args[0] === "=") {
+            let name = cmd;
+            let value = (0, eval)(i.args.slice(1).join(" "));
+            memory[name] = value;
+          } else if (modules[i.cmd])
+            modules[i.cmd](cmd, i.args, fs, memory, blip_shell);
+          else
+            stdout('error: unknown command "' + cmd + '" in line "' + i.cmd + " " + i.args.join(" ") + '"');
+        }
+      };
+      interop(j);
+      kernel_input = kernel_input.filter((e) => e.id !== j.id);
+      if (kernel_input.length === 0)
+        stdout(null);
+    }
+    kernel_count--;
+  };
+  const kernel_tick = (tps) => {
+    stdout("<span cyan>blip kernel</span>\n<span magenta bold>v" + version + "</span>" + (localStorage.getItem("notice-done") ?? '\n<span yellow>use the "help" command to see available commands, or use the "files" command to edit files.</span>'));
+    localStorage.setItem("notice-done", "");
+    kernel_interval = parseInt(setInterval(() => kernel(), 1000 / tps > 249 ? 249 : 1000 / tps).toString());
+  };
+  let rnd = mulberry32(Math.random() * +new Date);
+  let fs = {};
+  let memory = {};
+  const blip_shell = {
+    stdin: (...data) => stdin_data.push(data),
+    stdout,
+    stdclear,
+    line: () => kernel_line + 1,
+    code: () => kernel_code,
+    filesystem: (name) => {
+      if (name)
+        delete fs[name];
+      return fs;
+    },
+    memory: () => memory,
+    write: (name, value) => fs[name] = value,
+    build: (tps = 20) => {
+      fs = JSON.parse(localStorage.getItem("blip-fs")) || {};
+      kernel_tick(tps);
+      if (fs["main.blip"])
+        blip_shell.run("run main.blip");
+      else
+        stdout(null);
+      blip_shell.build = () => {
+        throw "kernel error: Cannot build a kernel that is already built";
+      };
+      blip_shell.stop = () => {
+        clearInterval(kernel_interval);
+        localStorage.setItem("blip-fs", JSON.stringify(fs));
+        memory = {};
+        fs = {};
+      };
+    },
+    stop: () => {
+      throw "kernel error: Cannot stop a kernel that is not loaded yet";
+    },
+    run: (line) => {
+      let id = Math.floor(rnd() * 100000000000000000000);
+      let arr = line.replaceAll("\r", "").replaceAll(/function [^}]+ {\n([^}]+\n)+}/g, (f) => {
+        return f.replaceAll(/[^\\]\[[^\]]+\]/g, (g) => {
+          return g.substring(0, 1) + "\\" + g.substring(1);
+        });
+      }).split("\n").map((e) => {
+        let w = e ?? "";
+        while (w.startsWith(" "))
+          w = w.substring(1);
+        while (w.match(/[^\\]\[[^\]]+\]/g))
+          w = w.replaceAll(/[^\\]\[[^\]]+\]/g, (f) => {
+            return f.substring(0, 1) + memory[f.substring(2, f.length - 1)];
+          });
+        w = w.replaceAll(/\\\[[^\]]+\]/g, (f) => f.substring(1));
+        let cmd = w.split(" ")[0];
+        let rnd2 = mulberry32(+new Date * Math.random() * 128378);
+        let DIVIDER = Math.floor(Math.random() * rnd2() * 200).toString();
+        let args = w.replaceAll("\\ ", DIVIDER).split(" ").slice(1).map((e) => e.replaceAll(DIVIDER, " ")) ?? [];
+        return { cmd, args };
+      });
+      kernel_input.push({ time: +new Date, id, arr });
+    }
+  };
+  return blip_shell;
+};
+const Terminal = document.querySelector("terminal");
+const Files = document.querySelector("files");
+const Help = document.querySelector("HelpWrapper");
+const Window = document.querySelector("window");
+function escapeHtml(unsafe) {
+  return unsafe.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;");
+}
+function setEndOfContenteditable(contentEditableElement) {
+  if (Terminal.innerHTML.includes("<br><br>"))
+    Terminal.innerHTML = Terminal.innerHTML.replaceAll("<br><br>", "<br>");
+  if (Terminal.innerHTML.startsWith("<br>"))
+    Terminal.innerHTML = Terminal.innerHTML.substring(4);
+  let range, selection;
+  if (document.createRange) {
+    range = document.createRange();
+    range.selectNodeContents(contentEditableElement);
+    range.collapse(false);
+    selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+  } else if (document.selection) {
+    range = document.body.createTextRange();
+    range.moveToElementText(contentEditableElement);
+    range.collapse(false);
+    range.select();
+  }
+}
+Terminal.setAttribute("contenteditable", "");
+Terminal.setAttribute("spellcheck", "false");
+let add_command_input = 0;
+const files = () => {
+  Files.style.display = "block";
+  shell.stdout("<br>opening blip file explorer...");
+};
+const help = () => {
+  Help.style.display = "block";
+  shell.stdout("<br>opening blip manual...");
+};
+let window_click = true;
+Files.onclick = () => {
+  if (!window_click) {
+    Files.style.display = "none";
+    shell.stdout(null);
+  }
+};
+Help.onclick = () => {
+  if (!window_click) {
+    Help.style.display = "none";
+    shell.stdout(null);
+  }
+};
+let fs = {
+  ok: "\xF8k"
+};
+const deepCompare = (arg1, arg2) => {
+  if (Object.prototype.toString.call(arg1) === Object.prototype.toString.call(arg2)) {
+    if (Object.prototype.toString.call(arg1) === "[object Object]" || Object.prototype.toString.call(arg1) === "[object Array]") {
+      if (Object.keys(arg1).length !== Object.keys(arg2).length)
+        return false;
+      return Object.keys(arg1).every((key) => deepCompare(arg1[key], arg2[key]));
+    }
+    return arg1 === arg2;
+  }
+  return false;
+};
+var file_name = "";
+let files__ = {};
+function getCursorPos(input) {
+  if (("selectionStart" in input) && document.activeElement == input)
+    return {
+      start: input.selectionStart,
+      end: input.selectionEnd
+    };
+  else if (input.createTextRange) {
+    let sel = document.selection.createRange();
+    if (sel.parentElement() === input) {
+      let rng = input.createTextRange();
+      rng.moveToBookmark(sel.getBookmark());
+      let len;
+      let pos;
+      for (len = 0;rng.compareEndPoints("EndToStart", rng) > 0; rng.moveEnd("character", -1))
+        len++;
+      rng.setEndPoint("StartToStart", input.createTextRange());
+      for (pos = { start: 0, end: len };rng.compareEndPoints("EndToStart", rng) > 0; rng.moveEnd("character", -1)) {
+        pos.start++;
+        pos.end++;
+      }
+      return pos;
+    }
+  }
+  return {
+    start: -1,
+    end: -1
+  };
+}
+function getCaretPosition(editableDiv) {
+  var caretPos = 0, sel, range;
+  if (window.getSelection) {
+    sel = window.getSelection();
+    if (sel.rangeCount) {
+      range = sel.getRangeAt(0);
+      if (range.commonAncestorContainer.parentNode == editableDiv)
+        caretPos = range.endOffset;
+    }
+  } else if (document.selection && document.selection.createRange) {
+    range = document.selection.createRange();
+    if (range.parentElement() == editableDiv) {
+      var tempEl = document.createElement("span");
+      editableDiv.insertBefore(tempEl, editableDiv.firstChild);
+      var tempRange = range.duplicate();
+      tempRange.moveToElementText(tempEl);
+      tempRange.setEndPoint("EndToEnd", range);
+      caretPos = tempRange.text.length;
+    }
+  }
+  return caretPos;
+}
+const switch_file = (filename) => {
+  file_name = filename;
+  if (!files__[filename]) {
+    document.querySelector("Window > textarea").value = shell.filesystem()[filename] || "";
+    files__[filename] = "";
+  }
+};
+const opodato = () => {
+  let newfs = { ...shell.filesystem() };
+  let suff = (() => {
+    try {
+      return document.querySelector("Window > textarea").value;
+    } catch {
+      return "";
+    }
+  })();
+  if (!deepCompare(newfs, fs)) {
+    let html = "";
+    fs = { ...newfs };
+    let files = Object.keys(fs).map((jj) => {
+      return {
+        name: jj,
+        data: fs[jj]
+      };
+    });
+    let elements = files.map((jj) => {
+      return `<thmingji><button onclick="switch_file('${jj.name}')"><span purple>-</span> ${jj.name}</button><X onclick="shell.filesystem('${jj.name}'); file_name = ''; opodato();">x</X></thmingji>`;
+    });
+    if (elements.length == 0)
+      elements = ["<thmingji><button>No files found...</button></thmingji>"];
+    html += `<bokes><thmingji><button onclick="switch_file(prompt('enter file name:'))"><span green>+</span> new file</button></thmingji>` + elements.join("") + `</bokes><textarea spellcheck="false">${suff}</textarea>`;
+    let range;
+    if (document.querySelector("Window > textarea"))
+      range = getCursorPos(document.querySelector("Window > textarea"));
+    Window.innerHTML = html;
+    if (suff != "") {
+      document.querySelector("Window > textarea").focus();
+      document.querySelector("Window > textarea").setSelectionRange(range.start, range.end);
+    }
+  }
+  if (file_name != "")
+    shell.write(file_name, document.querySelector("textarea").value);
+};
+let mouse = true;
+Terminal.onmouseenter = () => mouse = true;
+Terminal.onmouseleave = () => mouse = false;
+let crashed = false;
+function mulberry32(a) {
+  return function() {
+    let t = a += 1831565813;
+    t = Math.imul(t ^ t >>> 15, t | 1);
+    t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+Terminal.onkeydown = (e) => {
+  let key = e.key;
+  if (Terminal) {
+    if (mouse)
+      setEndOfContenteditable(Terminal);
+  }
+  if ((key.length === 1 || key.startsWith("Back")) && !(e.controlKey || e.metaKey) && crashed)
+    return false;
+  if ((e.metaKey || e.controlKey) && key === "r")
+    location.reload();
+  if (key === "Enter") {
+    let input = Terminal.innerText.split("~> ")[Terminal.innerText.split("~> ").length - 1];
+    input = input.toLowerCase();
+    if (input === "sadge") {
+      console.log("Sadge triggered.");
+      shell.stdout("<br><span cyan>Sorry to hear that.</span>");
+      CozyPlace();
+    }
+    const gen = mulberry32(Math.random() * +new Date);
+    const rnd = () => Math.floor(gen() * 255);
+    const collar = () => `rgb(${rnd()}, ${rnd()}, ${rnd()})`;
+    if (input === "files")
+      files();
+    else if (input === "help")
+      help();
+    else if (input === "explode") {
+      crashed = true;
+      Terminal.setAttribute("contentEditable", "false");
+      shell.stdout("\nEPILEPSY WARNING!\nCLOSE THE WEBSITE NOW IF YOU HAVE EPILEPSY OR ANY TYPE OF PHOTOSENSITIVITY!");
+      setTimeout(() => {
+        shell.stdout("\nTWO SECONDS LEFT TO CLOSE THE WEBSITE!!");
+        setTimeout(() => {
+          setInterval(() => {
+            shell.stdout("\n<span red>Boom!</span>");
+            document.querySelectorAll("*").forEach((e) => {
+              e.style = "font-size: " + Math.random() * 3 + "rem !important; color: " + collar() + "; background-color: " + collar() + ";";
+            });
+          }, 10);
+        }, 2000);
+      }, 2000);
+    } else
+      shell.run(input);
+    return true;
+  }
+  if (key.startsWith("Arrow"))
+    return false;
+  if (key.startsWith("Back") && Terminal.innerText.endsWith("~> ") || key.startsWith("Back") && (e.metaKey || e.controlKey))
+    return false;
+  if (key.startsWith("Back") && Terminal.innerHTML.endsWith("<br>")) {
+    Terminal.innerHTML = Terminal.innerHTML.substring(0, Terminal.innerHTML.length - 4);
+    return false;
+  }
+  if (key.startsWith("Back")) {
+    Terminal.innerHTML = Terminal.innerHTML.substring(0, Terminal.innerHTML.length - 1);
+    return false;
+  }
+  if (key === "a" && (e.metaKey || e.controlKey))
+    return false;
+  if (!(e.metaKey || e.controlKey) && key.length === 1) {
+    Terminal.innerHTML = Terminal.innerHTML + key;
+    return false;
+  }
+};
+document.documentElement.onclick = () => {
+  if (!window_click)
+    Terminal.focus();
+};
+const shell = _blip((...e) => {
+  if (e[0] === null) {
+    Terminal.innerHTML += '<br><span contenteditable="false" red>~> </span> ';
+    return;
+  }
+  if (e[0]?.startsWith("error: "))
+    Terminal.innerHTML += `<span red>${e.join(" ").replaceAll("\n", "<br>")}</span><br>`;
+  else
+    Terminal.innerHTML += e.join(" ").replaceAll("\n", "<br>") + "<br>";
+  window.scrollTo({
+    top: document.body.scrollHeight,
+    left: 0,
+    behavior: "smooth"
+  });
+}, (base = "false") => {
+  Terminal.innerHTML = "";
+});
+Terminal.focus();
+setInterval(opodato, 100);
+let tm_data = "";
+setInterval(() => {
+  if (tm_data !== Terminal.innerHTML) {
+    tm_data = Terminal.innerHTML;
+    Terminal.innerHTML = Terminal.innerHTML.replaceAll(/<span {0,1}[^>]+>[^<]*<br>/g, (f) => {
+      return f.replaceAll("<br>", "");
+    });
+    setEndOfContenteditable(Terminal);
+  }
+}, 10);
+window.onerror = (e) => {
+  shell.stop();
+  shell.stdout("error: KERNEL crashed - <span cyan>Line: " + shell.line() + "</span>\nCode:\n \n<span purple bold>" + shell.code() + "</span>\n \nReason:\n<span yellow>" + e.toString() + "</span>");
+  crashed = true;
+  Terminal.setAttribute("contentEditable", "false");
+};
+Help.innerHTML = Help.innerHTML.replaceAll(/blip/gi, (g) => "<span bold green>" + g + "</span>").replaceAll("<span bold green>Blip</span> manual", "Blip manual").replaceAll(/`[^`]+`/g, (g) => "<code>" + g.substring(1, g.length - 1) + "</code>");
+const CozyPlace = () => setTimeout(() => {
+  let LoFi = new Audio("https://www.chosic.com/wp-content/uploads/2022/04/Cozy-Place-Chill-Background-Music.mp3");
+  LoFi.loop = true;
+  LoFi.play();
+});
+shell.build(249);
+
+</script>
+</body>
